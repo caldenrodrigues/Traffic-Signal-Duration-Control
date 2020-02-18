@@ -16,7 +16,7 @@ def show_me(img, show_output=False, text="Image"):
 
 IMAGE_DIR = "./Output"
 VIDEO_SOURCE = "../Videos/demo_lane.mp4"
-SHOW_OUTPUT = False
+SHOW_OUTPUT = True
 SHAPE = (720, 1280)  # HxW
 EXIT_PTS1 = np.array([
     [[0, 400], [645, 500], [645, 0], [0, 0]]

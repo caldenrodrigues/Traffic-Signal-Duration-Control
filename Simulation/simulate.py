@@ -16,7 +16,7 @@ pygame.display.set_caption('A bit Racey')
 
 black = (0,0,0)
 white = (255,255,255)
-
+speed = 1
 clock = pygame.time.Clock()
 crashed = False
 #Loading Images
@@ -38,13 +38,13 @@ LIST_Lane1 = []
 EndPoint_Lane1 = [display_width * 0.45,display_height * 0.45]
 CurrentPoint_Lane1 = 0
 second = "-1"
-no_of_vehicles_per_second = 2
+no_of_vehicles_per_second = 3
 SIGNAL_Lane1_pos = (display_width * 0.55, display_height * 0.5)
 SIGNAL_Lane2_pos = (display_width * 0.55, display_height * 0.35)
 
 #EVENTS
 EVENT_lane1_straight = pygame.USEREVENT + 1
-pygame.time.set_timer(EVENT_lane1_straight, 10000)
+pygame.time.set_timer(EVENT_lane1_straight, 30000)
 
 EVENT_lane2_straight = pygame.USEREVENT + 2
 pygame.time.set_timer(EVENT_lane2_straight, 10000)
@@ -100,7 +100,7 @@ def movePosition():
                 if(diff > 0 and diff < min and i["CurrentPoint"][0] == j["CurrentPoint"][0]):
                     min = diff
             if(min>50):
-                i["CurrentPoint"] = [i["CurrentPoint"][0], i["CurrentPoint"][1]-1]
+                i["CurrentPoint"] = [i["CurrentPoint"][0], i["CurrentPoint"][1]-speed]
 
 
 def getCurrentPointLane1():
@@ -137,10 +137,8 @@ while not crashed:
         if event.type == EVENT_lane2_straight:
             print("Switch in Lane2 Lights")
             if LIGHTS_lane2_straight == 1:
-                SIGNAL_Lane1 = redImg
                 LIGHTS_lane2_straight = 0
             else:
-                SIGNAL_Lane1 = greenImg
                 LIGHTS_lane2_straight = 1
 
     current_second = datetime.datetime.now().strftime("%S")

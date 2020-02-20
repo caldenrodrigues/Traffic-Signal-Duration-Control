@@ -9,6 +9,8 @@ import cv2 as cv2
 import matplotlib.pyplot as plt
 from darkflow.net.build import TFNet
 import utils
+import datetime
+import json
 
 # import utils
 # without this some strange errors happen
@@ -18,9 +20,9 @@ random.seed(123)
 
 # ============================================================================
 IMAGE_SOURCE = "./lowDensity.png"
-VIDEO_SOURCE = "./train.m4v"
+VIDEO_SOURCE = "./full_length.m4v"
 # VIDEO_SOURCE = "shutterstock.mp4"
-SHOW_OUTPUT = True
+SHOW_OUTPUT = False
 SHAPE = (720, 1280)  # HxW
 EXIT_COLOR = (66, 183, 42)
 
@@ -32,13 +34,16 @@ EXIT_PTS = np.array([
 ])
 base = np.zeros(SHAPE + (3,), dtype='uint8')
 exit_mask = cv2.fillPoly(base, EXIT_PTS, (255, 255, 255))[
-        :, :, 0]  # RGB for background mask
+    :, :, 0]  # RGB for background mask
 
 options = {"model": "../Yolo/cfg/yolo.cfg",
            "load": "../Yolo/bin/yolo.weights", "threshold": 0.1, "gpu": 0.8}
 
 tfnet = TFNet(options)
 pathes = []
+data = {}
+data['list'] = []
+speedForOnePixelPerFrame = 4
 vehicle_count = 0
 car_count = 0
 truck_count = 0
@@ -53,6 +58,24 @@ path_size = 4
 BOUNDING_BOX_COLOUR = (255, 0, 0)
 CAR_COLOURS = [(0, 0, 255)]
 # ============================================================================
+
+
+def distance(y):
+    y = 720-y
+    return max(1, (y-207.5)/10.25)
+
+
+def max(x, y):
+    if(x > y):
+        return x
+    return y
+
+
+sum_of_exit_mask = 0
+row = 0
+for outer in exit_mask:
+    sum_of_exit_mask += np.count_nonzero(outer == 255) * distance(row)
+    row += 1
 
 
 def show_me(img, show_output=False, text="Image"):
@@ -91,6 +114,7 @@ def main():
     global vehicle_count
     global car_count
     global truck_count
+    global sum_of_exit_mask
 
     img = cv2.imread(IMAGE_SOURCE)
 
@@ -103,12 +127,10 @@ def main():
     bg_subtractor = cv2.createBackgroundSubtractorMOG2(
         history=500, detectShadows=True)
 
-    cap = skvideo.io.vreader(VIDEO_SOURCE)
     capRun = skvideo.io.vreader(VIDEO_SOURCE)
 
     # skipping 500 frames to train bg subtractor
-    train_bg_subtractor(bg_subtractor, capRun, num=100)
-    # train_bg_subtractor(bg_subtractor, cap, num=1800)
+    train_bg_subtractor(bg_subtractor, capRun, num=500)
 
     _frame_number = -1
     frame_number = -1
@@ -151,22 +173,18 @@ def main():
         sum_of_fg_mask = 0
         row = 0
         for outer in fg_mask_area:
-            sum_of_fg_mask += list(outer).count(255) * distance(row)
-            row += 1
-
-        sum_of_exit_mask = 0
-        row = 0
-        for outer in exit_mask:
-            sum_of_exit_mask += list(outer).count(255) * distance(row)
+            # print(outer)
+            # print(type(outer))
+            #sum_of_fg_mask += list(outer).count(255) * distance(row)
+            sum_of_fg_mask += np.count_nonzero(outer == 255) * distance(row)
             row += 1
 
         percentageActual = (sum_of_fg_mask / sum_of_exit_mask) * 100
-        print("Percentage calculated with distance considered: " +
-              str(percentageActual))
+        #print("Percentage calculated with distance considered: " + str(percentageActual))
 
-        percentage = cv2.countNonZero(
-            fg_mask_area) / (cv2.countNonZero(exit_mask)) * 100
-        print("Percentage calculated without distance considered: " + str(percentage))
+        # percentage = cv2.countNonZero(
+        #     fg_mask_area) / (cv2.countNonZero(exit_mask)) * 100
+        # print("Percentage calculated without distance considered: " + str(percentage))
 
         # print(len(_img.shape))
         temp = cv2.merge((fg_mask_area, fg_mask_area, fg_mask_area))
@@ -282,8 +300,19 @@ def main():
                 # if add:
                 #     new_pathes.append(path)
                 new_pathes.append(path)
-
         pathes = new_pathes
+        #################################################
+        # Speed
+        #################################################
+        # print(pathes)
+        sumPixelDifference = 0
+        for path in pathes:
+            if len(path) > 1:
+                sumPixelDifference += utils.distance(path[-1][2], path[-2][2])
+                # print(sumPixelDifference)
+        # print("-------------------")
+        #print(sumPixelDifference / len(pathes))
+        avgSpeed = sumPixelDifference / len(pathes) * speedForOnePixelPerFrame
         #print("Count2: " + str(len(pathes)))
         #################################################
         # VISUALIZATION
@@ -291,8 +320,8 @@ def main():
         # TOP BAR
         cv2.rectangle(
             frame, (0, 0), (frame.shape[1], 50), (0, 0, 0), cv2.FILLED)
-        cv2.putText(frame, ("Vehicles passed: {total} - Cars passed: {cars} - Trucks passed: {trucks} - Percentage: {percentage}".format(
-            total=vehicle_count, cars=car_count, trucks=truck_count, percentage = percentageActual)), (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+        cv2.putText(frame, ("Vehicles: {total} - Cars: {cars} - Trucks: {trucks} - Percentage: {percentage} - Avg Speed: {avgSpeed}km/hr".format(
+            total=vehicle_count, cars=car_count, trucks=truck_count, percentage=str("{0:.2f}".format(percentageActual)), avgSpeed=str("{0:.2f}".format(avgSpeed)))), (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
         # MASK1
         # print(exit_mask)
         _frame = np.zeros(frame.shape, frame.dtype)
@@ -322,20 +351,17 @@ def main():
         show_me(frame, text="Created Paths", show_output=SHOW_OUTPUT)
         print("Vehicle Count: " + str(vehicle_count))
         utils.save_frame(frame, "OUTPUT/processed_%04d.png" % frame_number)
+        data["list"].append({"frameNo":frame_number, "Vehicles": vehicle_count, "Cars": car_count, "Trucks": truck_count, "Percentage": str(
+            "{0:.2f}".format(percentageActual)), "Speed": str("{0:.2f}".format(avgSpeed))})
+        with open('output.txt','w') as jsonFile:
+            json.dump(data, jsonFile, default = myconverter)
 
 
 # ============================================================================
 
-def distance(y):
-    y = 720-y
-    return max(1, (y-207.5)/10.25)
-
-
-def max(x, y):
-    if(x > y):
-        return x
-    return y
-
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
 
 def check_exit(point):
     # show_me(exit_masks1[0],True,"WTF1")
@@ -355,6 +381,7 @@ def check_exit(point):
     except:
         return 1
     return False
+
 
 if __name__ == "__main__":
     # log = utils.init_logging()

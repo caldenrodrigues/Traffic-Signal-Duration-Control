@@ -146,6 +146,9 @@ def main():
         if not frame.any():
             print("Frame capture failed, stopping...")
             break
+
+        do_not_need1, do_not_need2 = vidObj.read()
+
         _frame_number += 1
         if _frame_number % 2 != 0:
             continue

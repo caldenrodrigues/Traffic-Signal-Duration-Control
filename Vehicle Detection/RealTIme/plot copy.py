@@ -57,17 +57,3 @@ plt.pie(slices, labels = activities, colors=colors,
 plt.title('Total Number of Vehicles: ' + str(yVehicles[-1]))
 plt.legend() 
 plt.show()
-
-
-#Stuff from Lane-Weight Formula begins here:
-
-avgSpeed = sum(ySpeed)/len(ySpeed)
-normSpeed = avgSpeed/max(ySpeed)
-avgDensity = sum(yPercentage)/len(yPercentage)
-normDensity = avgDensity/100
-print("Average Speed: ", avgSpeed, "\tNormalized Speed: ", normSpeed)
-print("Average Density: ", avgDensity, "\tNormalized Density: ", normDensity)
-a=1
-b=1
-laneWeight = (a*normSpeed + b*normDensity)/(a+b)
-print("Lane Weight: ", laneWeight)

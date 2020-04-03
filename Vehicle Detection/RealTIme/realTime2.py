@@ -6,10 +6,7 @@ import math
 import numpy as np
 import skvideo.io
 import cv2 as cv2
-import matplotlib
-matplotlib.use('TKAgg')
-from matplotlib import pyplot as plt
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from darkflow.net.build import TFNet
 import utils
 import datetime
@@ -23,10 +20,9 @@ random.seed(123)
 
 # ============================================================================
 IMAGE_SOURCE = "./lowDensity.png"
-VIDEO_SOURCE = "./full_vid.m4v"
-# VIDEO_SOURCE = "./full_length.m4v"
+VIDEO_SOURCE = "./full_length.m4v"
 # VIDEO_SOURCE = "shutterstock.mp4"
-SHOW_OUTPUT = True
+SHOW_OUTPUT = False
 SHAPE = (720, 1280)  # HxW
 EXIT_COLOR = (66, 183, 42)
 
@@ -132,17 +128,12 @@ def main():
     cv2.addWeighted(mask, 1, img, 1, 0, img)
     show_me(img, text="Added weigth to mask", show_output=SHOW_OUTPUT)
 
-    bg_subtractor = cv2.createBackgroundSubtractorMOG2(
-        history=500, detectShadows=True)
-
+    print("1")
     capRun = skvideo.io.vreader(VIDEO_SOURCE)
 
     vidObj = cv2.VideoCapture(VIDEO_SOURCE)
     old_time = datetime.datetime.now()
-
-    # skipping 500 frames to train bg subtractor
-    train_bg_subtractor(bg_subtractor, capRun, num=500)
-
+    print("2")
     _frame_number = -1
     frame_number = -1
     pathes = []
@@ -150,9 +141,6 @@ def main():
         if not frame.any():
             print("Frame capture failed, stopping...")
             break
-
-        do_not_need1, do_not_need2 = vidObj.read()
-
         _frame_number += 1
         if _frame_number % 2 != 0:
             continue
@@ -160,52 +148,7 @@ def main():
 
         show_me(frame, text="Frame " + str(frame_number),
                 show_output=SHOW_OUTPUT)
-        fg_mask = bg_subtractor.apply(frame, None, 0.001)
-        show_me(fg_mask, text="After Background Subtraction",
-                show_output=SHOW_OUTPUT)
-        # fg_mask[fg_mask < 175] = 0
-        # show_me(fg_mask, text="Frame after thresholding",
-        #         show_output=SHOW_OUTPUT)
-
-        # # Perform morphology
-        # se = np.ones((7, 7), dtype='uint8')
-        # image_close = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE, se)
-
-        # show_me(image_close, text="Mask",
-        #         show_output=SHOW_OUTPUT)
-
-        fg_mask[fg_mask < 175] = 0
-        show_me(fg_mask, text="Frame after thresholding",
-                show_output=SHOW_OUTPUT)
-        fg_mask = filter_mask(fg_mask)
-        show_me(fg_mask, text="Frame after filtering", show_output=SHOW_OUTPUT)
-
-        fg_mask_area = cv2.bitwise_and(fg_mask, fg_mask, mask=exit_mask)
-        show_me(fg_mask_area, text="Frame after BitWise And",
-                show_output=SHOW_OUTPUT)
-
-        sum_of_fg_mask = 0
-        row = 0
-        for outer in fg_mask_area:
-            # print(outer)
-            # print(type(outer))
-            #sum_of_fg_mask += list(outer).count(255) * distance(row)
-            sum_of_fg_mask += np.count_nonzero(outer == 255) * distance(row)
-            row += 1
-
-        percentageActual = (sum_of_fg_mask / sum_of_exit_mask) * 100
-        #print("Percentage calculated with distance considered: " + str(percentageActual))
-
-        # percentage = cv2.countNonZero(
-        #     fg_mask_area) / (cv2.countNonZero(exit_mask)) * 100
-        # print("Percentage calculated without distance considered: " + str(percentage))
-
-        # print(len(_img.shape))
-        temp = cv2.merge((fg_mask_area, fg_mask_area, fg_mask_area))
-        mask = cv2.bitwise_and(_img, _img, mask=exit_mask)
-        cv2.addWeighted(mask, 1, temp, 1, 0, temp)
-        show_me(frame, text="Frame after Percentage", show_output=SHOW_OUTPUT)
-
+        print(frame_number)
         # objects Detected
         matches = []
 
@@ -300,7 +243,7 @@ def main():
                 msec = vidObj.get(cv2.CAP_PROP_POS_MSEC)
                 time = old_time + datetime.timedelta(milliseconds=msec)
                 # Adding direction to data
-                simulation['list'].append(
+                data['list'].append(
                    {'time': time, 'type': vehicle, 'direction': 'in'})
                 # print(data)
                 new_pathes.append(path)
@@ -315,58 +258,7 @@ def main():
                 #     new_pathes.append(path)
                 new_pathes.append(path)
         pathes = new_pathes
-        #################################################
-        # Speed
-        #################################################
-        # print(pathes)
-        sumPixelDifference = 0
-        for path in pathes:
-            if len(path) > 1:
-                sumPixelDifference += utils.distance(path[-1][2], path[-2][2])
-                # print(sumPixelDifference)
-        # print("-------------------")
-        #print(sumPixelDifference / len(pathes))
-        avgSpeed = sumPixelDifference / len(pathes) * speedForOnePixelPerFrame
-        #print("Count2: " + str(len(pathes)))
-        #################################################
-        # VISUALIZATION
-        #################################################
-        # TOP BAR
-        cv2.rectangle(
-            frame, (0, 0), (frame.shape[1], 50), (0, 0, 0), cv2.FILLED)
-        cv2.putText(frame, ("Vehicles: {total} - Cars: {cars} - Trucks: {trucks} - Percentage: {percentage} - Avg Speed: {avgSpeed}km/hr".format(
-            total=vehicle_count, cars=car_count, trucks=truck_count, percentage=str("{0:.2f}".format(percentageActual)), avgSpeed=str("{0:.2f}".format(avgSpeed)))), (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
-        # MASK1
-        # print(exit_mask)
-        _frame = np.zeros(frame.shape, frame.dtype)
-        # show_me(_img, text = "Numpy array initialized to zeros",show_output = self.show_output)
-        _frame[:, :] = EXIT_COLOR
-        # show_me(_img, text = "Set it to green",show_output = self.show_output)
-        mask = cv2.bitwise_and(_frame, _frame, mask=exit_mask)
-        # show_me(mask, text = "Set Mask color",show_output = SHOW_OUTPUT)
-        cv2.addWeighted(mask, 1, frame, 1, 0, frame)
-        show_me(frame, text="Added weigth to mask",
-                show_output=SHOW_OUTPUT)
-        # BOXES
-        # PATHS
-        # print(pathes)
-        for i, path in enumerate(pathes):
-            # print(path)
-            centroid = np.array(path)[:, 2].tolist()
-            contour = path[-1][1]
-            # print(contour)
-            x, y, w, h = contour
-            cv2.rectangle(frame, (x, y), (x + w - 1, y + h - 1),
-                          BOUNDING_BOX_COLOUR, 1)
-            for point in centroid:
-                cv2.circle(frame, point, 2, CAR_COLOURS[0], -1)
-                cv2.polylines(frame, [np.int32(centroid)],
-                              False, CAR_COLOURS[0], 1)
-        show_me(frame, text="Created Paths", show_output=SHOW_OUTPUT)
-        print("Frame number: " + str(frame_number) + "  ||  " + "Vehicle Count: " + str(vehicle_count))
-        utils.save_frame(frame, "OUTPUT/processed_%04d.png" % frame_number)
-        data["list"].append({"frameNo":frame_number, "Vehicles": vehicle_count, "Cars": car_count, "Trucks": truck_count, "Percentage": str(
-            "{0:.2f}".format(percentageActual)), "Speed": str("{0:.2f}".format(avgSpeed))})
+    
         with open('output.txt','w') as jsonFile:
             json.dump(data, jsonFile, default = myconverter)
         with open('simulation.txt','w') as jsonFile:

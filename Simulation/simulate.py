@@ -4,7 +4,7 @@ from dateutil import parser
 import datetime
 import time as t
 import random
-
+import datetime
 pygame.init()
 
 display_width = pygame.display.Info().current_w
@@ -23,65 +23,65 @@ crashed = False
 
 # Loading Images
 # Cars Straight
-carStraightNorth = pygame.image.load('Images/CarStraightNorth.png')
-carStraightSouth = pygame.image.load('Images/CarStraightSouth.png')
-carStraightEast = pygame.image.load('Images/CarStraightEast.png')
+carStraightNorth = pygame.image.load('Images/CarStraightNorth.png').convert_alpha()
+carStraightSouth = pygame.image.load('Images/CarStraightSouth.png').convert_alpha()
+carStraightEast = pygame.image.load('Images/CarStraightEast.png').convert_alpha()
 
 carStraightNorth = pygame.transform.scale(carStraightNorth, (20, 41))
 carStraightSouth = pygame.transform.scale(carStraightSouth, (20, 41))
 carStraightEast = pygame.transform.scale(carStraightEast, (41, 20))
 
 # Cars Left
-carLeftNorth = pygame.image.load('Images/CarLeftNorth.png')
-carLeftSouth = pygame.image.load('Images/CarLeftSouth.png')
-carLeftEast = pygame.image.load('Images/CarLeftEast.png')
+carLeftNorth = pygame.image.load('Images/CarLeftNorth.png').convert_alpha()
+carLeftSouth = pygame.image.load('Images/CarLeftSouth.png').convert_alpha()
+carLeftEast = pygame.image.load('Images/CarLeftEast.png').convert_alpha()
 
 carLeftNorth = pygame.transform.scale(carLeftNorth, (20, 41))
 carLeftSouth = pygame.transform.scale(carLeftSouth, (20, 41))
 carLeftEast = pygame.transform.scale(carLeftEast, (41, 20))
 
 # Cars Right
-carRightNorth = pygame.image.load('Images/CarRightNorth.png')
-carRightSouth = pygame.image.load('Images/CarRightSouth.png')
-carRightEast = pygame.image.load('Images/CarRightEast.png')
+carRightNorth = pygame.image.load('Images/CarRightNorth.png').convert_alpha()
+carRightSouth = pygame.image.load('Images/CarRightSouth.png').convert_alpha()
+carRightEast = pygame.image.load('Images/CarRightEast.png').convert_alpha()
 
 carRightNorth = pygame.transform.scale(carRightNorth, (20, 41))
 carRightSouth = pygame.transform.scale(carRightSouth, (20, 41))
 carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 
 #Trucks
-truckStraightNorth = pygame.image.load('Images/TruckStraight.png')
+truckStraightNorth = pygame.image.load('Images/TruckStraight.png').convert_alpha()
 truckStraightNorth = pygame.transform.scale(truckStraightNorth, (22, 46))
 truckStraightSouth = pygame.transform.rotate(truckStraightNorth, 180)
 truckStraightEast = pygame.transform.rotate(truckStraightNorth,270)
 
-truckLeftNorth = pygame.image.load('Images/TruckLeft.png')
+truckLeftNorth = pygame.image.load('Images/TruckLeft.png').convert_alpha()
 truckLeftNorth = pygame.transform.scale(truckLeftNorth, (22, 46))
 truckLeftSouth = pygame.transform.rotate(truckLeftNorth, 180)
 truckLeftEast = pygame.transform.rotate(truckLeftNorth, 270)
 
-truckRightNorth = pygame.image.load('Images/TruckRight.png')
+truckRightNorth = pygame.image.load('Images/TruckRight.png').convert_alpha()
 truckRightNorth = pygame.transform.scale(truckRightNorth, (22, 46))
 truckRightSouth = pygame.transform.rotate(truckRightNorth, 180)
 truckRightEast = pygame.transform.rotate(truckRightNorth, 270)
 
 #Divider
-dividerRoad = pygame.image.load('Images/Divider.png')
+dividerRoad = pygame.image.load('Images/Divider.png').convert_alpha()
 dividerRoad = pygame.transform.rotate(dividerRoad, 90)
 dividerRoad = pygame.transform.scale(dividerRoad, (20, 20))
 
 #Grass
-grass = pygame.image.load('Images/grass.jpg')
+grass = pygame.image.load('Images/grass.jpg').convert_alpha()
 grass = pygame.transform.scale(grass, (20, 20))
 
 # Signals
-signal1 = pygame.image.load('Images/Signal1.png')
-signalRed = pygame.image.load('Images/Red.png')
-signal1Straight = pygame.image.load('Images/Signal1Straight.png')
-signal2 = pygame.image.load('Images/Signal2.png')
-signal2Red = pygame.image.load('Images/Signal2Red.png')
-signal3 = pygame.image.load('Images/Signal3.png')
-signal3Red = pygame.image.load('Images/Signal3Red.png')
+signal1 = pygame.image.load('Images/Signal1.png').convert_alpha()
+signalRed = pygame.image.load('Images/Red.png').convert_alpha()
+signal1Straight = pygame.image.load('Images/Signal1Straight.png').convert_alpha()
+signal2 = pygame.image.load('Images/Signal2.png').convert_alpha()
+signal2Red = pygame.image.load('Images/Signal2Red.png').convert_alpha()
+signal3 = pygame.image.load('Images/Signal3.png').convert_alpha()
+signal3Red = pygame.image.load('Images/Signal3Red.png').convert_alpha()
 
 signalLane1 = signalRed
 signalLane2 = signal2Red
@@ -136,30 +136,59 @@ pygame.time.set_timer(EVENT, 10000)
 # Load the data
 # with open('../Vehicle Detection/Yolo/output_lane3.txt') as f:
 #     data = json.load(f)["list"]
-with open('../Vehicle Detection/RealTIme/simulation.txt') as f:
-    data = json.load(f)["list"]
+with open('../Vehicle Detection/RealTIme/simulationDataLane1.txt') as f:
+   DataLane1 = json.load(f)["list"]
+# for i in range(0, 77):
+#     temp = DataLane1[i]
+#     tempTime =  datetime.datetime.strptime(temp["time"], '%Y-%m-%d %H:%M:%S.%f') - datetime.timedelta(seconds=90)
+#     temp["time"] = tempTime.strftime("%Y-%m-%d %H:%M:%S.%f")
+#     DataLane2.append(temp)
+# for i in range(0, 77):
+#     temp = DataLane1[i]
+#     tempTime =  datetime.datetime.strptime(temp["time"], '%Y-%m-%d %H:%M:%S.%f') - datetime.timedelta(seconds=180)
+#     temp["time"] = tempTime.strftime("%Y-%m-%d %H:%M:%S.%f")
+    # DataLane3.append(temp)
+with open('../Vehicle Detection/RealTIme/simulationDataLane2.txt') as f:
+   DataLane2 = json.load(f)["list"]
+with open('../Vehicle Detection/RealTIme/simulationDataLane3.txt') as f:
+   DataLane3 = json.load(f)["list"]
 # print(data)
-time = parser.parse(data[0]['time'])
-final_time = parser.parse(data[-1]['time'])
+time = parser.parse(DataLane1[0]['time'])
+final_time = parser.parse(DataLane1[-1]['time'])
 
 
 percentageData = []
 with open('../Vehicle Detection/RealTIme/output.txt') as f:
     outputData = json.load(f)["list"]
 
+
 def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
+
 outputData = list(chunks(outputData, 1350))
 percentageData = []
 for i in range(0, len(outputData)-1):
-    percentageData.append(sum(float(item['Percentage']) for item in outputData[i])/1350)
+    percentageData.append(
+        (sum(float(item['Percentage']) for item in outputData[i])/1350)/100)
+print("Normalized Density:")
 print(percentageData)
+
 speedData = []
 for i in range(0, len(outputData)-1):
     speedData.append(sum(float(item['Speed']) for item in outputData[i])/1350)
+for i in range(0, len(speedData)):
+    speedData[i] = speedData[i] / max(speedData)
+print("Normalized Speed:")
 print(speedData)
+
+laneWeight = []
+a = 1
+b = 1
+for i in range(0, len(percentageData)):
+    laneWeight.append((a * percentageData[i] + b * speedData[i]) / (a+b))
+print(laneWeight)
 
 
 def AddCar(x, y, img):
@@ -194,32 +223,36 @@ road1width = 250
 road2start = EndPoint_Lane2[1]-80
 road2height = 130
 
-def render():
-    # gameDisplay.fill(white)
 
-    #For Grass
-    for y in range (0, display_height, 20):
+#Initialize background
+
+#   Grass
+for y in range (0, display_height, 20):
         for x in range (0, display_width, 20):
             gameDisplay.blit(grass, (x,y))
 
+#   Divider
+for y in range (0, int(signalPositionLane3[1]) , 20):
+    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+
+for y in range (int(signalPositionLane1[1]), display_height , 20):
+    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+
+
+def render():
+    #Road
     pygame.draw.rect(gameDisplay, (50, 50, 50), (road1start, 0, road1width, display_height),0)
     pygame.draw.rect(gameDisplay, (255, 255, 255), (road1start, 0, road1width, display_height), 4)
-
     pygame.draw.rect(gameDisplay, (50, 50, 50), (0, road2start, display_width, road2height), 0)
     pygame.draw.rect(gameDisplay, (255, 255, 255), (0, road2start, display_width, road2height), 4)
-
     pygame.draw.rect(gameDisplay, (255, 255, 255), (road1start, road2start, road1width, road2height), 4)
 
-    for y in range (0, int(signalPositionLane3[1]) , 20):
-        gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
-
-    for y in range (int(signalPositionLane1[1]), display_height , 20):
-         gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
-
+    #Traffic Light
     gameDisplay.blit(signalLane1, signalPositionLane1)
     gameDisplay.blit(signalLane2, signalPositionLane2)
     gameDisplay.blit(signalLane3, signalPositionLane3)
     
+    #Add vehicles
     AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
     AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
     AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast, truckStraightEast, truckLeftEast, truckRightEast)
@@ -499,21 +532,21 @@ while not crashed:
     current_second = datetime.datetime.now().strftime("%S")
     if(not current_second == second):
         second = current_second
-        for i in data:
+        for i in DataLane1:
             current_time = parser.parse(i['time']).strftime("%H:%M:%S")
             if(current_time == time.strftime("%H:%M:%S") and i['direction'] == "in"):
                 currentPoint = getCurrentPointLane1()
                 ListLane1.append({"id": id, "type": i["type"], "direction": getDirectionLane1(
                 ), "EndPoint": EndPoint_Lane1, "CurrentPoint": currentPoint})
                 id += 1
-        for i in data:
+        for i in DataLane2:
             current_time = parser.parse(i['time']).strftime("%H:%M:%S")
             if(current_time == time.strftime("%H:%M:%S") and i['direction'] == "in"):
                 currentPoint = getCurrentPointLane2()
                 ListLane2.append({"id": id, "type": i["type"], "direction": getDirectionLane2(
                 ), "EndPoint": EndPoint_Lane2, "CurrentPoint": currentPoint})
                 id += 1
-        for i in data:
+        for i in DataLane3:
             current_time = parser.parse(i['time']).strftime("%H:%M:%S")
             if(current_time == time.strftime("%H:%M:%S") and i['direction'] == "in"):
                 currentPoint = getCurrentPointLane4()

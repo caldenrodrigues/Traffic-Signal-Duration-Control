@@ -109,14 +109,33 @@ pygame.time.set_timer(EVENT, 10000)
 #####################################################
 
 # Load the data
-# with open('../Vehicle Detection/Yolo/output_lane3.txt') as f:
-#     data = json.load(f)["list"]
-with open('../Vehicle Detection/RealTIme/simulation.txt') as f:
+with open('../Vehicle Detection/Yolo/output_lane3.txt') as f:
     data = json.load(f)["list"]
+# with open('../Vehicle Detection/RealTIme/simulation.txt') as f:
+#    data = json.load(f)["list"]
 # print(data)
 time = parser.parse(data[0]['time'])
 final_time = parser.parse(data[-1]['time'])
-print(time, final_time)
+
+
+percentageData = []
+with open('../Vehicle Detection/RealTIme/output.txt') as f:
+    outputData = json.load(f)["list"]
+
+def chunks(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+outputData = list(chunks(outputData, 1350))
+percentageData = []
+for i in range(0, len(outputData)-1):
+    percentageData.append(sum(float(item['Percentage']) for item in outputData[i])/1350)
+print(percentageData)
+speedData = []
+for i in range(0, len(outputData)-1):
+    speedData.append(sum(float(item['Speed']) for item in outputData[i])/1350)
+print(speedData)
+
 
 def AddCar(x, y, img):
     # print(x,y,carImg)
@@ -372,7 +391,7 @@ def removeCars():
                 i["CurrentPoint"] = getCurrentPointLane5()
                 i["EndPoint"] = EndPoint_Lane5
                 ListLane5.append(i)
-        
+
         temp = []
         for i in ListLane1:
             if(i["CurrentPoint"][1] <= i["EndPoint"][1] and i["direction"] == "Straight"):

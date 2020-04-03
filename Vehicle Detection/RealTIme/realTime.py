@@ -6,7 +6,10 @@ import math
 import numpy as np
 import skvideo.io
 import cv2 as cv2
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TKAgg')
+from matplotlib import pyplot as plt
+# import matplotlib.pyplot as plt
 from darkflow.net.build import TFNet
 import utils
 import datetime
@@ -20,9 +23,10 @@ random.seed(123)
 
 # ============================================================================
 IMAGE_SOURCE = "./lowDensity.png"
-VIDEO_SOURCE = "./full_length.m4v"
+VIDEO_SOURCE = "./full_vid.m4v"
+# VIDEO_SOURCE = "./full_length.m4v"
 # VIDEO_SOURCE = "shutterstock.mp4"
-SHOW_OUTPUT = False
+SHOW_OUTPUT = True
 SHAPE = (720, 1280)  # HxW
 EXIT_COLOR = (66, 183, 42)
 
@@ -359,7 +363,7 @@ def main():
                 cv2.polylines(frame, [np.int32(centroid)],
                               False, CAR_COLOURS[0], 1)
         show_me(frame, text="Created Paths", show_output=SHOW_OUTPUT)
-        print("Vehicle Count: " + str(vehicle_count))
+        print("Frame number: " + str(frame_number) + "  ||  " + "Vehicle Count: " + str(vehicle_count))
         utils.save_frame(frame, "OUTPUT/processed_%04d.png" % frame_number)
         data["list"].append({"frameNo":frame_number, "Vehicles": vehicle_count, "Cars": car_count, "Trucks": truck_count, "Percentage": str(
             "{0:.2f}".format(percentageActual)), "Speed": str("{0:.2f}".format(avgSpeed))})

@@ -53,17 +53,17 @@ carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 truckStraightNorth = pygame.image.load('Images/TruckStraight.png').convert_alpha()
 truckStraightNorth = pygame.transform.scale(truckStraightNorth, (22, 46))
 truckStraightSouth = pygame.transform.rotate(truckStraightNorth, 180)
-truckStraightEast = pygame.transform.rotate(truckStraightNorth, 90)
+truckStraightEast = pygame.transform.rotate(truckStraightNorth,270)
 
 truckLeftNorth = pygame.image.load('Images/TruckLeft.png').convert_alpha()
 truckLeftNorth = pygame.transform.scale(truckLeftNorth, (22, 46))
 truckLeftSouth = pygame.transform.rotate(truckLeftNorth, 180)
-truckLeftEast = pygame.transform.rotate(truckLeftNorth, 90)
+truckLeftEast = pygame.transform.rotate(truckLeftNorth, 270)
 
 truckRightNorth = pygame.image.load('Images/TruckRight.png').convert_alpha()
 truckRightNorth = pygame.transform.scale(truckRightNorth, (22, 46))
 truckRightSouth = pygame.transform.rotate(truckRightNorth, 180)
-truckRightEast = pygame.transform.rotate(truckRightNorth, 90)
+truckRightEast = pygame.transform.rotate(truckRightNorth, 270)
 
 #Divider
 dividerRoad = pygame.image.load('Images/Divider.png').convert_alpha()
@@ -225,32 +225,36 @@ road1width = 250
 road2start = EndPoint_Lane2[1]-80
 road2height = 130
 
-def render():
-    # gameDisplay.fill(white)
 
-    #For Grass
-    for y in range (0, display_height, 20):
+#Initialize background
+
+#   Grass
+for y in range (0, display_height, 20):
         for x in range (0, display_width, 20):
             gameDisplay.blit(grass, (x,y))
 
+#   Divider
+for y in range (0, int(signalPositionLane3[1]) , 20):
+    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+
+for y in range (int(signalPositionLane1[1]), display_height , 20):
+    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+
+
+def render():
+    #Road
     pygame.draw.rect(gameDisplay, (50, 50, 50), (road1start, 0, road1width, display_height),0)
     pygame.draw.rect(gameDisplay, (255, 255, 255), (road1start, 0, road1width, display_height), 4)
-
     pygame.draw.rect(gameDisplay, (50, 50, 50), (0, road2start, display_width, road2height), 0)
     pygame.draw.rect(gameDisplay, (255, 255, 255), (0, road2start, display_width, road2height), 4)
-
     pygame.draw.rect(gameDisplay, (255, 255, 255), (road1start, road2start, road1width, road2height), 4)
 
-    for y in range (0, int(signalPositionLane3[1]) , 20):
-        gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
-
-    for y in range (int(signalPositionLane1[1]), display_height , 20):
-         gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
-
+    #Traffic Light
     gameDisplay.blit(signalLane1, signalPositionLane1)
     gameDisplay.blit(signalLane2, signalPositionLane2)
     gameDisplay.blit(signalLane3, signalPositionLane3)
     
+    #Add vehicles
     AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
     AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
     AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast, truckStraightEast, truckLeftEast, truckRightEast)

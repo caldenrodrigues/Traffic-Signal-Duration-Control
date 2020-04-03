@@ -49,7 +49,22 @@ carRightNorth = pygame.transform.scale(carRightNorth, (20, 41))
 carRightSouth = pygame.transform.scale(carRightSouth, (20, 41))
 carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 
-<<<<<<< HEAD
+#Trucks
+truckStraightNorth = pygame.image.load('Images/TruckStraight.png')
+truckStraightNorth = pygame.transform.scale(truckStraightNorth, (22, 46))
+truckStraightSouth = pygame.transform.rotate(truckStraightNorth, 180)
+truckStraightEast = pygame.transform.rotate(truckStraightNorth, 90)
+
+truckLeftNorth = pygame.image.load('Images/TruckLeft.png')
+truckLeftNorth = pygame.transform.scale(truckLeftNorth, (22, 46))
+truckLeftSouth = pygame.transform.rotate(truckLeftNorth, 180)
+truckLeftEast = pygame.transform.rotate(truckLeftNorth, 90)
+
+truckRightNorth = pygame.image.load('Images/TruckRight.png')
+truckRightNorth = pygame.transform.scale(truckRightNorth, (22, 46))
+truckRightSouth = pygame.transform.rotate(truckRightNorth, 180)
+truckRightEast = pygame.transform.rotate(truckRightNorth, 90)
+
 #Divider
 dividerRoad = pygame.image.load('Images/Divider.png')
 dividerRoad = pygame.transform.rotate(dividerRoad, 90)
@@ -59,8 +74,6 @@ dividerRoad = pygame.transform.scale(dividerRoad, (20, 20))
 grass = pygame.image.load('Images/grass.jpg')
 grass = pygame.transform.scale(grass, (20, 20))
 
-=======
->>>>>>> 7cc50a4e38a8ebaad4b96fb12075482fd7ca152d
 # Signals
 signal1 = pygame.image.load('Images/Signal1.png')
 signalRed = pygame.image.load('Images/Red.png')
@@ -154,17 +167,26 @@ def AddCar(x, y, img):
     gameDisplay.blit(img, (x, y))
 
 
-def AddCarsLane(l, carStraight, carLeft, carRight):
+def AddCarsLane(l, carStraight, carLeft, carRight, truckStraight, truckLeft, truckRight):
     # print(l)
     for i in l:
-        if(i["direction"] == "Straight"):
-            AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carStraight)
-        elif i["direction"] == "Left":
-            AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carLeft)
-        else:
-            AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carRight)
+        if(i["type"] == "car"):
+            if(i["direction"] == "Straight"):
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carStraight)
+            elif i["direction"] == "Left":
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carLeft)
+            else:
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carRight)
 
-<<<<<<< HEAD
+        elif(i["type"] == "truck"):
+            if(i["direction"] == "Straight"):
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], truckStraight)
+            elif i["direction"] == "Left":
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], truckLeft)
+            else:
+                AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], truckRight)
+
+
 
 #Some point variables I didnt know where else I should have put.
 road1start = EndPoint_Lane1[0]-30
@@ -198,28 +220,13 @@ def render():
     gameDisplay.blit(signalLane2, signalPositionLane2)
     gameDisplay.blit(signalLane3, signalPositionLane3)
     
-    AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth)
-    AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth)
-    AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast)
-    AddCarsLane(ListLane2, carStraightEast, carLeftEast, carRightEast)
-    AddCarsLane(ListLane6, carStraightSouth, carLeftSouth, carRightSouth)
-    AddCarsLane(ListLane4, carStraightSouth, carLeftSouth, carRightSouth)
+    AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
+    AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth, truckStraightNorth, truckLeftNorth, truckRightNorth)
+    AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast, truckStraightEast, truckLeftEast, truckRightEast)
+    AddCarsLane(ListLane2, carStraightEast, carLeftEast, carRightEast, truckStraightEast, truckLeftEast, truckRightEast)
+    AddCarsLane(ListLane6, carStraightSouth, carLeftSouth, carRightSouth, truckStraightSouth, truckLeftSouth, truckRightSouth)
+    AddCarsLane(ListLane4, carStraightSouth, carLeftSouth, carRightSouth, truckStraightSouth, truckLeftSouth, truckRightSouth)
 
-=======
-
-def render():
-    gameDisplay.fill(white)
-    gameDisplay.blit(signalLane1, signalPositionLane1)
-    gameDisplay.blit(signalLane2, signalPositionLane2)
-    gameDisplay.blit(signalLane3, signalPositionLane3)
-    AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth)
-    AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth)
-    AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast)
-    AddCarsLane(ListLane2, carStraightEast, carLeftEast, carRightEast)
-    AddCarsLane(ListLane6, carStraightSouth, carLeftSouth, carRightSouth)
-    AddCarsLane(ListLane4, carStraightSouth, carLeftSouth, carRightSouth)
-
->>>>>>> 7cc50a4e38a8ebaad4b96fb12075482fd7ca152d
 
 def movePosition():
     for i in ListLane1:

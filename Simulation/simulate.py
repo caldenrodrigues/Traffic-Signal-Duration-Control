@@ -53,17 +53,17 @@ carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 truckStraightNorth = pygame.image.load('Images/TruckStraight.png')
 truckStraightNorth = pygame.transform.scale(truckStraightNorth, (22, 46))
 truckStraightSouth = pygame.transform.rotate(truckStraightNorth, 180)
-truckStraightEast = pygame.transform.rotate(truckStraightNorth, 90)
+truckStraightEast = pygame.transform.rotate(truckStraightNorth,270)
 
 truckLeftNorth = pygame.image.load('Images/TruckLeft.png')
 truckLeftNorth = pygame.transform.scale(truckLeftNorth, (22, 46))
 truckLeftSouth = pygame.transform.rotate(truckLeftNorth, 180)
-truckLeftEast = pygame.transform.rotate(truckLeftNorth, 90)
+truckLeftEast = pygame.transform.rotate(truckLeftNorth, 270)
 
 truckRightNorth = pygame.image.load('Images/TruckRight.png')
 truckRightNorth = pygame.transform.scale(truckRightNorth, (22, 46))
 truckRightSouth = pygame.transform.rotate(truckRightNorth, 180)
-truckRightEast = pygame.transform.rotate(truckRightNorth, 90)
+truckRightEast = pygame.transform.rotate(truckRightNorth, 270)
 
 #Divider
 dividerRoad = pygame.image.load('Images/Divider.png')
@@ -134,10 +134,10 @@ pygame.time.set_timer(EVENT, 10000)
 #####################################################
 
 # Load the data
-with open('../Vehicle Detection/Yolo/output_lane3.txt') as f:
+# with open('../Vehicle Detection/Yolo/output_lane3.txt') as f:
+#     data = json.load(f)["list"]
+with open('../Vehicle Detection/RealTIme/simulation.txt') as f:
     data = json.load(f)["list"]
-# with open('../Vehicle Detection/RealTIme/simulation.txt') as f:
-#    data = json.load(f)["list"]
 # print(data)
 time = parser.parse(data[0]['time'])
 final_time = parser.parse(data[-1]['time'])

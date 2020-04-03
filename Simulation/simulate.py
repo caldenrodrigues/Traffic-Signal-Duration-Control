@@ -17,71 +17,71 @@ pygame.display.set_caption('Traffic Signal Duration Control')
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-speed = 1
+speed = 2
 clock = pygame.time.Clock()
 crashed = False
 
 # Loading Images
 # Cars Straight
-carStraightNorth = pygame.image.load('Images/CarStraightNorth.png')
-carStraightSouth = pygame.image.load('Images/CarStraightSouth.png')
-carStraightEast = pygame.image.load('Images/CarStraightEast.png')
+carStraightNorth = pygame.image.load('Images/CarStraightNorth.png').convert_alpha()
+carStraightSouth = pygame.image.load('Images/CarStraightSouth.png').convert_alpha()
+carStraightEast = pygame.image.load('Images/CarStraightEast.png').convert_alpha()
 
 carStraightNorth = pygame.transform.scale(carStraightNorth, (20, 41))
 carStraightSouth = pygame.transform.scale(carStraightSouth, (20, 41))
 carStraightEast = pygame.transform.scale(carStraightEast, (41, 20))
 
 # Cars Left
-carLeftNorth = pygame.image.load('Images/CarLeftNorth.png')
-carLeftSouth = pygame.image.load('Images/CarLeftSouth.png')
-carLeftEast = pygame.image.load('Images/CarLeftEast.png')
+carLeftNorth = pygame.image.load('Images/CarLeftNorth.png').convert_alpha()
+carLeftSouth = pygame.image.load('Images/CarLeftSouth.png').convert_alpha()
+carLeftEast = pygame.image.load('Images/CarLeftEast.png').convert_alpha()
 
 carLeftNorth = pygame.transform.scale(carLeftNorth, (20, 41))
 carLeftSouth = pygame.transform.scale(carLeftSouth, (20, 41))
 carLeftEast = pygame.transform.scale(carLeftEast, (41, 20))
 
 # Cars Right
-carRightNorth = pygame.image.load('Images/CarRightNorth.png')
-carRightSouth = pygame.image.load('Images/CarRightSouth.png')
-carRightEast = pygame.image.load('Images/CarRightEast.png')
+carRightNorth = pygame.image.load('Images/CarRightNorth.png').convert_alpha()
+carRightSouth = pygame.image.load('Images/CarRightSouth.png').convert_alpha()
+carRightEast = pygame.image.load('Images/CarRightEast.png').convert_alpha()
 
 carRightNorth = pygame.transform.scale(carRightNorth, (20, 41))
 carRightSouth = pygame.transform.scale(carRightSouth, (20, 41))
 carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 
 #Trucks
-truckStraightNorth = pygame.image.load('Images/TruckStraight.png')
+truckStraightNorth = pygame.image.load('Images/TruckStraight.png').convert_alpha()
 truckStraightNorth = pygame.transform.scale(truckStraightNorth, (22, 46))
 truckStraightSouth = pygame.transform.rotate(truckStraightNorth, 180)
 truckStraightEast = pygame.transform.rotate(truckStraightNorth, 90)
 
-truckLeftNorth = pygame.image.load('Images/TruckLeft.png')
+truckLeftNorth = pygame.image.load('Images/TruckLeft.png').convert_alpha()
 truckLeftNorth = pygame.transform.scale(truckLeftNorth, (22, 46))
 truckLeftSouth = pygame.transform.rotate(truckLeftNorth, 180)
 truckLeftEast = pygame.transform.rotate(truckLeftNorth, 90)
 
-truckRightNorth = pygame.image.load('Images/TruckRight.png')
+truckRightNorth = pygame.image.load('Images/TruckRight.png').convert_alpha()
 truckRightNorth = pygame.transform.scale(truckRightNorth, (22, 46))
 truckRightSouth = pygame.transform.rotate(truckRightNorth, 180)
 truckRightEast = pygame.transform.rotate(truckRightNorth, 90)
 
 #Divider
-dividerRoad = pygame.image.load('Images/Divider.png')
+dividerRoad = pygame.image.load('Images/Divider.png').convert_alpha()
 dividerRoad = pygame.transform.rotate(dividerRoad, 90)
 dividerRoad = pygame.transform.scale(dividerRoad, (20, 20))
 
 #Grass
-grass = pygame.image.load('Images/grass.jpg')
+grass = pygame.image.load('Images/grass.jpg').convert_alpha()
 grass = pygame.transform.scale(grass, (20, 20))
 
 # Signals
-signal1 = pygame.image.load('Images/Signal1.png')
-signalRed = pygame.image.load('Images/Red.png')
-signal1Straight = pygame.image.load('Images/Signal1Straight.png')
-signal2 = pygame.image.load('Images/Signal2.png')
-signal2Red = pygame.image.load('Images/Signal2Red.png')
-signal3 = pygame.image.load('Images/Signal3.png')
-signal3Red = pygame.image.load('Images/Signal3Red.png')
+signal1 = pygame.image.load('Images/Signal1.png').convert_alpha()
+signalRed = pygame.image.load('Images/Red.png').convert_alpha()
+signal1Straight = pygame.image.load('Images/Signal1Straight.png').convert_alpha()
+signal2 = pygame.image.load('Images/Signal2.png').convert_alpha()
+signal2Red = pygame.image.load('Images/Signal2Red.png').convert_alpha()
+signal3 = pygame.image.load('Images/Signal3.png').convert_alpha()
+signal3Red = pygame.image.load('Images/Signal3Red.png').convert_alpha()
 
 signalLane1 = signalRed
 signalLane2 = signal2Red
@@ -130,7 +130,9 @@ signalPositionLane3 = (display_width * 0.5, display_height * 0.3)
 
 # EVENTS
 EVENT = pygame.USEREVENT + 1
+EVENT_SECOND = pygame.USEREVENT + 2
 pygame.time.set_timer(EVENT, 10000)
+pygame.time.set_timer(EVENT_SECOND, 1000)
 #####################################################
 
 # Load the data
@@ -494,12 +496,15 @@ def removeCars():
             ListLane3.append(i)
     # print(ListLane3)
 
+start_ticks=pygame.time.get_ticks()
 
 while not crashed:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             crashed = True
         if event.type == EVENT:
+            seconds=(pygame.time.get_ticks()-start_ticks)/1000
+            print(seconds)
             if signalOn == 1:
                 print("Signal 2")
                 signalOn = 2

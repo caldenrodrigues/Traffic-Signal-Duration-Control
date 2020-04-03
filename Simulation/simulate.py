@@ -93,6 +93,9 @@ signalLane1 = signalRed
 signalLane2 = signal2Red
 signalLane3 = signal3Red
 
+#Counter font
+counterFont = pygame.font.Font("Images/Poppins-Light.ttf", 18);
+
 #####################################################
 
 # Initialization
@@ -134,7 +137,7 @@ signalPositionLane1 = (display_width * 0.5, display_height * 0.5)
 signalPositionLane2 = (display_width * 0.38, display_height * 0.35)
 signalPositionLane3 = (display_width * 0.5, display_height * 0.3)
 
-font = pygame.font.SysFont('Consolas', 30)
+#font = pygame.font.SysFont('Consolas', 30)
 
 # EVENTS
 EVENT = pygame.USEREVENT + 1
@@ -254,13 +257,24 @@ for y in range(0, display_height, 20):
     for x in range(0, display_width, 20):
         gameDisplay.blit(grass, (x, y))
 
-#   Divider
-for y in range(0, int(signalPositionLane3[1]), 20):
-    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+# Index
+indexStart = road1start-350
+indexTop = road2start+250
 
-for y in range(int(signalPositionLane1[1]), display_height, 20):
-    gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+pygame.draw.rect(gameDisplay, (255,255,255), (indexStart, indexTop, 250, 130))
+pygame.draw.rect(gameDisplay, (0,0,0), (indexStart, indexTop, 250, 130), 4)
+gameDisplay.blit(counterFont.render("INDEX", True, (20,20,20)), (indexStart+100, indexTop+10))
+gameDisplay.blit(carStraightEast, (indexStart+10, indexTop+40))
+gameDisplay.blit(truckStraightEast, (indexStart+60, indexTop+40))
+gameDisplay.blit(counterFont.render("Goes Straight", True, (20,20,20)), (indexStart+120, indexTop+40))
+gameDisplay.blit(carLeftEast, (indexStart+10, indexTop+70))
+gameDisplay.blit(truckLeftEast, (indexStart+60, indexTop+70))
+gameDisplay.blit(counterFont.render("Turns Left", True, (20,20,20)), (indexStart+120, indexTop+70))
+gameDisplay.blit(carRightEast, (indexStart+10, indexTop+100))
+gameDisplay.blit(truckRightEast, (indexStart+60, indexTop+100))
+gameDisplay.blit(counterFont.render("Turns Right", True, (20,20,20)), (indexStart+120, indexTop+100))
 
+########
 
 def render():
     #gameDisplay.fill((255, 255, 255))
@@ -275,6 +289,13 @@ def render():
                      (0, road2start, display_width, road2height), 4)
     pygame.draw.rect(gameDisplay, (255, 255, 255),
                      (road1start, road2start, road1width, road2height), 4)
+
+    # Divider
+    for y in range(0, int(signalPositionLane3[1]), 20):
+        gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
+
+    for y in range(int(signalPositionLane1[1]), display_height, 20):
+        gameDisplay.blit(dividerRoad, (signalPositionLane3[0]+5, y))
 
     # Traffic Light
     gameDisplay.blit(signalLane1, signalPositionLane1)
@@ -296,26 +317,29 @@ def render():
                 truckStraightSouth, truckLeftSouth, truckRightSouth)
 
     # Counter
-    counter1x = signalPositionLane1[0] + 2
+    counter1x = signalPositionLane1[0]
     counter1y = signalPositionLane1[1] + 80
 
-    counter2x = signalPositionLane2[0] - 25
-    counter2y = signalPositionLane2[1] + 2
+    counter2x = signalPositionLane2[0] - 30
+    counter2y = signalPositionLane2[1] - 1
 
-    counter3x = signalPositionLane3[0] + 2
-    counter3y = signalPositionLane3[1] - 25
+    counter3x = signalPositionLane3[0]
+    counter3y = signalPositionLane3[1] - 30
+    
+    pygame.draw.rect(gameDisplay, (0, 0, 0), (counter1x, counter1y, 30, 30))
+    pygame.draw.rect(gameDisplay, (255, 215, 0), (counter1x, counter1y, 30, 30), 1)
+    gameDisplay.blit(counterFont.render(str(TimeSignal1),
+                                 True, (0, 230, 0)), (counter1x+3, counter1y+2))
+    
+    pygame.draw.rect(gameDisplay, (0, 0, 0), (counter2x, counter2y, 30, 30))
+    pygame.draw.rect(gameDisplay, (255, 215, 0), (counter2x, counter2y, 30, 30), 1)
+    gameDisplay.blit(counterFont.render(str(TimeSignal2),
+                                 True, (0, 230, 0)), (counter2x+3, counter2y+2))
 
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (counter1x, counter1y, 25, 25))
-    gameDisplay.blit(font.render(str(TimeSignal1),
-                                 True, (0, 0, 0)), (counter1x, counter1y))
-
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (counter2x, counter2y, 25, 25))
-    gameDisplay.blit(font.render(str(TimeSignal2),
-                                 True, (0, 0, 0)), (counter2x, counter2y))
-
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (counter3x, counter3y, 25, 25))
-    gameDisplay.blit(font.render(str(TimeSignal3),
-                                 True, (0, 0, 0)), (counter3x, counter3y))
+    pygame.draw.rect(gameDisplay, (0, 0, 0), (counter3x, counter3y, 30, 30))
+    pygame.draw.rect(gameDisplay, (255, 215, 0), (counter3x, counter3y, 30, 30), 1)
+    gameDisplay.blit(counterFont.render(str(TimeSignal3),
+                                 True, (0,230,0)), (counter3x+3, counter3y+2))
 
 
 def movePosition():

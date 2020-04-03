@@ -49,6 +49,7 @@ carRightNorth = pygame.transform.scale(carRightNorth, (20, 41))
 carRightSouth = pygame.transform.scale(carRightSouth, (20, 41))
 carRightEast = pygame.transform.scale(carRightEast, (41, 20))
 
+<<<<<<< HEAD
 #Divider
 dividerRoad = pygame.image.load('Images/Divider.png')
 dividerRoad = pygame.transform.rotate(dividerRoad, 90)
@@ -58,6 +59,8 @@ dividerRoad = pygame.transform.scale(dividerRoad, (20, 20))
 grass = pygame.image.load('Images/grass.jpg')
 grass = pygame.transform.scale(grass, (20, 20))
 
+=======
+>>>>>>> 7cc50a4e38a8ebaad4b96fb12075482fd7ca152d
 # Signals
 signal1 = pygame.image.load('Images/Signal1.png')
 signalRed = pygame.image.load('Images/Red.png')
@@ -161,6 +164,7 @@ def AddCarsLane(l, carStraight, carLeft, carRight):
         else:
             AddCar(i["CurrentPoint"][0], i["CurrentPoint"][1], carRight)
 
+<<<<<<< HEAD
 
 #Some point variables I didnt know where else I should have put.
 road1start = EndPoint_Lane1[0]-30
@@ -201,6 +205,21 @@ def render():
     AddCarsLane(ListLane6, carStraightSouth, carLeftSouth, carRightSouth)
     AddCarsLane(ListLane4, carStraightSouth, carLeftSouth, carRightSouth)
 
+=======
+
+def render():
+    gameDisplay.fill(white)
+    gameDisplay.blit(signalLane1, signalPositionLane1)
+    gameDisplay.blit(signalLane2, signalPositionLane2)
+    gameDisplay.blit(signalLane3, signalPositionLane3)
+    AddCarsLane(ListLane1, carStraightNorth, carLeftNorth, carRightNorth)
+    AddCarsLane(ListLane3, carStraightNorth, carLeftNorth, carRightNorth)
+    AddCarsLane(ListLane5, carStraightEast, carLeftEast, carRightEast)
+    AddCarsLane(ListLane2, carStraightEast, carLeftEast, carRightEast)
+    AddCarsLane(ListLane6, carStraightSouth, carLeftSouth, carRightSouth)
+    AddCarsLane(ListLane4, carStraightSouth, carLeftSouth, carRightSouth)
+
+>>>>>>> 7cc50a4e38a8ebaad4b96fb12075482fd7ca152d
 
 def movePosition():
     for i in ListLane1:
